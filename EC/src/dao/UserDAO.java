@@ -5,8 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 
 import base.DBManager;
+import beans.ItemDataBeans;
+import beans.MyBuyDateBeans;
 import beans.UserDataBeans;
 import ec.EcHelper;
 
@@ -31,7 +35,8 @@ public class UserDAO {
 		PreparedStatement st = null;
 		try {
 			con = DBManager.getConnection();
-			st = con.prepareStatement("INSERT INTO t_user(name,login_id,address,login_password,create_date) VALUES(?,?,?,?,?)");
+			st = con.prepareStatement(
+					"INSERT INTO t_user(name,login_id,address,login_password,create_date) VALUES(?,?,?,?,?)");
 			st.setString(1, udb.getName());
 			st.setString(2, udb.getLoginId());
 			st.setString(3, udb.getAddress());
@@ -222,4 +227,105 @@ public class UserDAO {
 		return isOverlap;
 	}
 
+
+
+	public MyBuyDateBeans getBuyDate(int id) {
+
+		Connection conn = null;
+
+		// データベースに接続
+
+		try {
+			conn = DBManager.getConnection();
+
+			// SQL作成
+			String sql = "SELECT " +
+					"* " +
+					"FROM m_delivery_method " +
+					"JOIN t_buy " +
+					"ON m_delivery_method.id = t_buy.delivery_method_id " +
+					"Where t_buy.user_id=?";
+
+			// 作成したSQLを実行し、結果を取得
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setInt(1, id);
+			ResultSet rs = pStmt.executeQuery();
+
+			// 戻り値のインスタンスを生成
+			MyBuyDateBeans beans = new MyBuyDateBeans();
+			// 取得結果から値を取り出す
+			while (rs.next()) {
+
+				Date BuyDate = rs.getDate("create_date");
+				int TotalPrice = rs.getInt("total_price");
+				String DeliveryMethodName = rs.getString("deliveryMethodName");
+
+				beans.setBuyDate(BuyDate);
+				beans.setTotalPrice(TotalPrice);
+				beans.setDeliveryMethodName(DeliveryMethodName);
+				// 他も同様に設定
+
+			}
+			// 取り出した値をインスタンス化しリターン
+			return beans;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			// データベース切断
+			if (conn != null) {
+			}
+			try {
+
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public ArrayList<ItemDataBeans> UserBuyHistoryInfo(int buyid) throws SQLException {
+
+		Connection conn = null;
+
+		// データベースに接続
+
+		try {
+			conn = DBManager.getConnection();
+
+			String sql = "SELECT m_item.name, m_item.price "
+					+ "FROM m_item INNER JOIN t_buy_detail "
+					+ "ON m_item.id = t_buy_detail.item_id "
+					+ "WHERE t_buy_detail.buy_id =?";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setInt(1, buyid);
+			ResultSet rs = pStmt.executeQuery();
+
+			ArrayList<ItemDataBeans> itemList = new ArrayList<ItemDataBeans>();
+
+
+			while (rs.next()){
+				ItemDataBeans item =new ItemDataBeans();
+				int price = rs.getInt("price");
+				String name =rs.getString("name");
+
+				item.setPrice(price);
+				item.setName(name);
+				itemList.add(item);
+
+			}
+			return itemList;
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new SQLException(e);
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
 }

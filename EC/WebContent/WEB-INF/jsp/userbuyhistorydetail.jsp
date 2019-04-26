@@ -1,4 +1,6 @@
-<%@	page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@	page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,11 +30,15 @@
 								</tr>
 							</thead>
 							<tbody>
+
+			 					<c:forEach var="user" items="${userlist}" >
 								<tr>
-									<td class="center">1234年56月78日90時12分</td>
-									<td class="center">サンプル</td>
-									<td class="center">123456789円</td>
+									<td class="center"><a href="UserBuyHistoryDetail?buy_id=${user.id}" class="btn-floating btn waves-effect waves-light "> <i class="material-icons">details</i></a></td>
+									<td class="center">${user.formatDate} </td>
+									<td class="center">${user.deliveryMethodName}</td>
+									<td class="center">${user.totalPrice}円</td>
 								</tr>
+							</c:forEach>
 							</tbody>
 						</table>
 					</div>
@@ -52,22 +58,12 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td class="center">サンプル商品名1</td>
-									<td class="center">111111111円</td>
-								</tr>
-								<tr>
-									<td class="center">サンプル商品名2</td>
-									<td class="center">222222222円</td>
-								</tr>
-								<tr>
-									<td class="center">サンプル商品名3</td>
-									<td class="center">333333333円</td>
-								</tr>
-								<tr>
-									<td class="center">サンプル</td>
-									<td class="center">123456789円</td>
-								</tr>
+								<c:forEach var="item" items="${itemList}">
+									<tr>
+										<td class="center">${item.name}</td>
+										<td class="center">${item.price}</td>
+									</tr>
+								</c:forEach>
 							</tbody>
 						</table>
 					</div>

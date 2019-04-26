@@ -32,10 +32,11 @@
 									</thead>
 									<tbody>
 										<c:forEach var="cartInItem" items="${cart}" >
+
 											<tr>
 												<td class="center">${cartInItem.name}</td>
 												<td class="center">${cartInItem.price}円</td>
-												<td class="center">${cartInItem.price}円</td>
+												<td class="center">${cartInItem.price}</td>
 											</tr>
 										</c:forEach>
 										<tr>

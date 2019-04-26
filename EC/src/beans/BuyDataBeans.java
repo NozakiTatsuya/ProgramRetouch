@@ -17,6 +17,7 @@ public class BuyDataBeans  implements Serializable {
 	private int delivertMethodId;
 	private Date buyDate;
 
+
 	private String deliveryMethodName;
 	private int deliveryMethodPrice;
 
@@ -70,6 +71,5 @@ public class BuyDataBeans  implements Serializable {
 	public void setDeliveryMethodPrice(int deliveryMethodPrice) {
 		this.deliveryMethodPrice = deliveryMethodPrice;
 	}
-
 
 }
